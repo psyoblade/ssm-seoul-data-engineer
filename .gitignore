@@ -1,1 +1,37 @@
+# Custom
+env
+run.sh
+backup/
+.template
 .DS_Store
+__pycache__/
+.ipynb_checkpoints/
+**/.ipynb_checkpoints/
+datanode/
+namenode/
+nodes/
+logs/
+target/
+tmp/
+dimension/
+spark-warehouse/
+
+# Created by https://www.toptal.com/developers/gitignore/api/git
+# Edit at https://www.toptal.com/developers/gitignore?templates=git
+
+### Git ###
+# Created by git for backups. To disable backups in Git:
+# $ git config --global mergetool.keepBackup false
+*.orig
+
+# Created by git when using merge tools for conflicts
+*.BACKUP.*
+*.BASE.*
+*.LOCAL.*
+*.REMOTE.*
+*_BACKUP_*.txt
+*_BASE_*.txt
+*_LOCAL_*.txt
+*_REMOTE_*.txt
+
+# End of https://www.toptal.com/developers/gitignore/api/git
