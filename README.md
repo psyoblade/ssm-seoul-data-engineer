@@ -1,10 +1,10 @@
-# 2일차. 데이터 엔지니어링 프로젝트
+# 데이터 엔지니어링 프로젝트
 
 > 가상의 웹 쇼핑몰의 주요 지표를 생성하기 위한, 접속정보, 매출 및 고객정보 등의 데이터를 수집하여 기본 지표를 생성합니다
 
 
 - 범례
-  * :green_book: : 기본, :blue_book: : 중급
+  * :green_book: : 필수, :blue_book: : 선택
 
 ## 1. 실습을 위한 코드를 준비 합니다
 
@@ -75,7 +75,7 @@ docker-compose up -d
 # terminal
 docker-compose logs notebook | grep 8888
 ```
-> 출력된  URL을 복사하여 크롬 브라우저를 통해 접속하면, jupyter notebook lab 이 열리고 work 폴더가 보이면 정상기동 된 것입니다
+> 출력된 `https://127.0.0.1:8888` 로 시작하는 URL을 복사하여 크롬 브라우저를 통해 접속하면, jupyter notebook lab 이 열리고 work 폴더가 보이면 정상기동 된 것입니다
 
 #### 2-1-2. 기 생성된 실습용 노트북을 엽니다
 * 좌측 메뉴에서 "data-engineer-training-course.ipynb" 을 더블클릭합니다
