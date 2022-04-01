@@ -136,7 +136,7 @@ spark
   - 2020/10/25 일자 접속 (json) : <kbd>access25</kbd> <- <kbd>access/20201025</kbd> 
 
 * 아래의 제약조건을 만족 시켜야 합니다
-  - 입력 포맷이 Json 인 경우는 json 명령어와 추정(infer) 옵션을 사용하세요 <kbd>spark.read.option("inferSchema", "true").json("access/20201024")</kbd> 
+  - 입력 포맷이 Json 인 경우는 json 명령어와 추정(infer) 옵션을 사용하세요 <kbd>spark.read.option("inferSchema", "true").json("access/20201025")</kbd> 
   - 모든 데이터에 대한 스키마를 출력하세요 <kbd>dataFrame.printSchema()</kbd> 
   - 데이터 내용을 출력하여 확인하세요 <kbd>dataFrame.show() 혹은 display(dataFrame)</kbd> 
 
