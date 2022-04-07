@@ -289,7 +289,7 @@ CMD ["/bin/bash"]
 docker build -t ubuntu:local .
 ```
 
-<details><summary> :green_book: 2. [필수] 도커 이미지를 빌드하고 `echo 'hello world'`를 출력해 보세요</summary>
+<details><summary> :green_book: 2. [필수] 도커 이미지를 빌드하고 `echo '<본인의 이름 혹은 아이디>'`를 출력해 보세요</summary>
 
 > 출력 결과가 오류가 발생하지 않고, 아래와 유사하다면 성공입니다
 
@@ -311,7 +311,7 @@ Successfully tagged ubuntu:local
 
 > 아래와 같이 출력합니다
 ```bash
-docker run --rm -it ubuntu:local echo 'hello world'
+docker run --rm -it ubuntu:local echo 'psyoblade or park.suhyuk'
 ```
 
 </details>
