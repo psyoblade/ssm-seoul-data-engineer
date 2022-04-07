@@ -630,7 +630,7 @@ version: "3"
 
 services:
   mysql:
-    image: local/mysql:5.7
+    image: psyoblade/data-engineer-mysql:1.1
     container_name: mysql
     restart: always
     environment:
