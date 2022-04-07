@@ -219,7 +219,7 @@ docker exec ubuntu20 /tmp/helloworld.sh
 docker rm -f `docker ps -a | grep -v CONTAINER | awk '{ print $1 }'`
 ```
 
-<details><summary> :blue_book: 6. [필수] `nginx` 컨테이너를 시작 후에 프로세스 확인 및 로그를 출력하고 종료하세요 </summary>
+<details><summary> :green_book: 1. [필수] `nginx` 컨테이너를 시작 후에 프로세스 확인 및 로그를 출력하고 종료하세요 </summary>
 
 > 출력 결과가 오류가 발생하지 않고, 아래와 유사하다면 성공입니다
 
@@ -289,7 +289,7 @@ CMD ["/bin/bash"]
 docker build -t ubuntu:local .
 ```
 
-<details><summary> :green_book: 8. [필수] 도커 이미지를 빌드하고 `echo 'hello world'`를 출력해 보세요</summary>
+<details><summary> :green_book: 2. [필수] 도커 이미지를 빌드하고 `echo 'hello world'`를 출력해 보세요</summary>
 
 > 출력 결과가 오류가 발생하지 않고, 아래와 유사하다면 성공입니다
 
@@ -363,7 +363,7 @@ docker rm -f mysql-volatile
 docker volume ls
 ```
 
-<details><summary> :blue_book: 12. [필수] mysql-volatile 컨테이너를 다시 생성하고 테이블을 확인해 보세요</summary>
+<details><summary> :blue_book: 3. [선택] mysql-volatile 컨테이너를 다시 생성하고 테이블을 확인해 보세요</summary>
 
 > 테이블이 존재하지 않는다면 정답입니다.
 
@@ -403,7 +403,7 @@ docker exec -it mysql-persist mysql --port=3307 -uuser -ppass
 
 #### 2-6-2. 볼륨 확인 실습
 
-<details><summary> :closed_book: 13. [선택] mysql-persist 컨테이너를 강제 종료하고, 동일한 설정으로 다시 생성하여 테이블이 존재하는지 확인해 보세요</summary>
+<details><summary> :blue_book: 4. [선택] mysql-persist 컨테이너를 강제 종료하고, 동일한 설정으로 다시 생성하여 테이블이 존재하는지 확인해 보세요</summary>
 
 > 테이블이 존재하고 데이터가 있다면 정답입니다
 
@@ -509,7 +509,7 @@ docker-compose down
 <br>
 
 
-<details><summary> :closed_book: 14. [선택] 컴포즈 명령어(--scale)를 이용하여 우분투 컨테이너를 3개 띄워보세요  </summary>
+<details><summary> :blue_book: 5. [선택] 컴포즈 명령어(--scale)를 이용하여 우분투 컨테이너를 3개 띄워보세요  </summary>
 
 > 아래와 유사하게 작성 및 실행했다면 정답입니다
 
