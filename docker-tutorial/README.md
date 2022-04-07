@@ -534,7 +534,7 @@ services:
     image: psyoblade/data-engineer-ubuntu:20.04
     restart: always
     tty: true
-		deploy:
+    deploy:
       mode: replicated
       replicas: 3
       endpoint_mode: vip
