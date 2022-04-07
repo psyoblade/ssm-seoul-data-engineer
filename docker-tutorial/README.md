@@ -595,7 +595,7 @@ docker-compose ps -a
 ```bash
 # docker-compose top <services>
 docker-compose top mysql
-docker-compose top namenode
+docker-compose top ubuntu
 ```
 
 #### 3-2-6. 사용한 모든 컨테이너를 종료합니다
