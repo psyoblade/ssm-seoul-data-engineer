@@ -659,7 +659,7 @@ services:
 docker-compose up -d
 ```
 
-> phpMyAdmin(http://`vm<number>.aiffelbiz.co.kr`) 사이트에 접속하여 서버: `mysql`, 사용자명: `user`, 암호: `pass` 로 접속합니다
+> [phpMyAdmin](http://localhost) 사이트에 접속하여 서버: `mysql`, 사용자명: `user`, 암호: `pass` 로 접속합니다
 
 <br>
 
