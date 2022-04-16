@@ -40,4 +40,4 @@ services:
 
 networks:
   default:
-    name: default_network
+    name: ssm_seoul_network
