@@ -100,13 +100,9 @@ bin/kafka-console-consumer.sh $boot --topic events
 > `spark batch` 애플리케이션에 대한 코드 설명 및 동작방식 설명
 > 스파크 데이터를 읽고 정적인 데이터도 읽어서 동일한 결과 확인
 
-
 ### 3. `batch` 데이터를 적재하고 `kafka-hadoop-index` 통하여 배치색인
 > 적재된 데이터를 `druid-local-index` 작업을 통해서 일괄 색인
 > `events_batch` 테이블에 적재합니다
-
-### 4. `druid-kafka-index` 통해 `druid` 엔진에 저장합니다
-> `druid-console` 통해서 적재된 지표에 대한 조회
 
 
 ## III. 아키텍처 개선 및 확장 
