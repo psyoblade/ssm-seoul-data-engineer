@@ -5,20 +5,24 @@ services:
     container_name: ubuntu
     image: psyoblade/data-engineer-ubuntu:20.04
     restart: always
+    stdin_open: true
     tty: true
     volumes:
       - ./ubuntu/example:/example
   mysql:
     container_name: mysql
-    image: psyoblade/data-engineer-mysql:1.1
+    image: psyoblade/data-engineer-mysql:1.3
+    depends_on:
+      - notebook
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: testdb
-      MYSQL_USER: sqoop
-      MYSQL_PASSWORD: sqoop
+      MYSQL_DATABASE: default
+      MYSQL_USER: scott
+      MYSQL_PASSWORD: tiger
+      TZ: Asia/Seoul
     ports:
-      - '3306:3306'
+      - "3306:3306"
     networks:
       - default
     healthcheck:
@@ -31,5 +35,5 @@ services:
 
 networks:
   default:
-    name: default_network
+    name: ssm_seoul_docker_network
 

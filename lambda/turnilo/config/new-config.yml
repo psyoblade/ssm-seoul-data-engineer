@@ -1,0 +1,10 @@
+port: 9090
+
+clusters:
+  - name: druid
+    url: http://druid:8082
+    sourceListScan: auto
+    sourceListRefreshOnLoad: false
+    sourceListRefreshInterval: 0
+    sourceReintrospectOnLoad: false
+    sourceReintrospectInterval: 0

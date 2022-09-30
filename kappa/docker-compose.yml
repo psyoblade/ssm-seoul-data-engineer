@@ -69,8 +69,6 @@ services:
       TZ: Asia/Seoul
     ports:
       - "3306:3306"
-    networks:
-      - default
     healthcheck:
       test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
       interval: 3s
@@ -81,7 +79,7 @@ services:
   phpmyadmin:
     image: phpmyadmin/phpmyadmin:5.2.0
     container_name: phpmyadmin
-    links:
+    depends_on:
       - mysql
     environment:
       PMA_HOST: mysql
@@ -93,5 +91,5 @@ services:
 
 networks:
   default:
-    name: kappa_architecture_network
+    name: ssm_seoul_kappa_network
 

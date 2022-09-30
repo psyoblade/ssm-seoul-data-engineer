@@ -4,7 +4,7 @@
 
 ## I. 카파 아키텍처 스트리밍 데이터 데이터 Stage & Aggregation 실습
 > 카파 아키텍처의 기본 스트리밍 파이프라인을 구성하여, 데이터를 스테이징 한 이후에, 해당 토픽을 구성하고 데이터 처리 파이프라인을 구성합니다
-* stream pipeline : fluentd -> kafka -> spark-stream-stage -> kafka -> spark-stream-agg-small -> mysql -> phpmyadmin
+* stream pipeline : fluentd -> kafka -> spark-stream-stage -> kafka -> spark-stream-agg -> mysql -> phpmyadmin
 
 ### 1. `fluentd` 통한 예제 데이터 생성
 > fluentd dummy plugin 을 통해 `{id:number, time:timestamp}` 형식의 예제 데이터 생성
@@ -29,7 +29,7 @@
 
 ## II. 카파 아키텍처 스트리밍 데이터 Recovery 실습
 > 이미 생성된 stage 를 원본 스트림 소스로 활용하여 스트리밍 애플리케이션만 다시 수행하므로써 복구가 가능합니다
-* backup pipeline : spark-stream-stage -> mysql
+* backup pipeline : spark-stream-agg -> mysql
 
 ### 1. `kafka` 에 저장된 `events` 토픽을 활용하여 지연된 로그 및 변경된 정보를 반영합니다
 > 글로벌 테이블에 추가된 메타데이터를 `names` 테이블에 반영합니다
