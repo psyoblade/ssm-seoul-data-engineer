@@ -4,8 +4,6 @@ services:
   mysql:
     container_name: mysql
     image: psyoblade/data-engineer-mysql:1.3
-    depends_on:
-      - notebook
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: root
@@ -28,7 +26,7 @@ services:
     container_name: notebook
     image: psyoblade/data-engineer-notebook:1.7.5
     depends_on:
-      - kafka
+      - mysql
     user: root
     privileged: true
     restart: always

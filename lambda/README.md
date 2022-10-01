@@ -585,25 +585,269 @@ docker-compose restart turnilo
 
 ![speed-layer](images/batch-layer.png)
 
-### 1. `fluentd` 통한 예제 데이터 하둡에 저장
+### 3.1 `fluentd` 통한 예제 데이터 저장
 
-> `fluentd` 하둡 저장 플러그인에 대한 설명 및 실습 애플리케이션에 대한 설명
-> 로컬 경로에 저장하고 해당 경로가 노트북에서 읽어들일 수 있도록 설정하여 출력확인
+>  로컬 환경상 `hadoop` 에 저장하는 대신 로컬 `bound volume` 에 저장하고 해당 볼륨을 개별 노트북 컨테이너에서 `mount` 하여 사용하는 방식으로 실습을 진행합니다
 
-### 2. `spark batch` 처리를 통해 데이터 정재 및 가공처리 후 콘솔 출력
-> `spark batch` 애플리케이션에 대한 코드 설명 및 동작방식 설명
-> 스파크 데이터를 읽고 정적인 데이터도 읽어서 동일한 결과 확인
+```bash
+# terminal
+docker-compose up -d fluentd
+docker-compose exec fluentd bash
+```
 
-### 3. `batch` 데이터를 적재하고 `kafka-hadoop-index` 통하여 배치색인
-> 적재된 데이터를 `druid-local-index` 작업을 통해서 일괄 색인
-> `events_batch` 테이블에 적재합니다
+> 아래와 같이 `/fluentd/config/lambda-v4.conf` 파일을 생성하여 로그를 별도 파일로 저장합니다
+
+```xml
+# cat > /fluentd/config/lambda-v4.conf
+# https://docs.fluentd.org/v/0.12/input/dummy
+<source>
+  @type dummy
+  tag info
+  auto_increment_key id
+  dummy {"hello":"ssm-seoul"}
+</source>
+
+# https://docs.fluentd.org/v/0.12/filter/record_transformer
+<filter info>
+    @type record_transformer
+    enable_ruby
+    <record>
+        time ${Time.at(time).strftime('%Y-%m-%d %H:%M:%S')}
+    </record>
+</filter>
+
+# https://docs.fluentd.org/v/0.12/output/stdout
+<match debug>
+  @type stdout
+</match>
+
+# https://docs.fluentd.org/v/0.12/buffer/file
+<match info>
+    @type file
+    @log_level info
+    add_path_suffix true
+    path_suffix .json
+    path /fluentd/target/lambda/batch/names.%Y%m%d.%H
+    <format>
+        @type json
+    </format>
+    <buffer time>
+        timekey 1h
+        timekey_use_utc false
+        timekey_wait 10s
+        timekey_zone +0900
+        flush_mode immediate
+        flush_thread_count 8
+    </buffer>
+</match>
+```
+
+```bash
+# docker: fluentd
+fluentd -c /fluentd/config/lambda-v4.conf
+```
+
+> 기동 이후에 /fluentd/target/lambda/batch 경로에 파일이 생성되는 지 확인합니다
 
 
-## III. 아키텍처 개선 및 확장 
 
-### 1. `fluentd` 통하여 멀티 싱크를 통하여 파이프라인 간소화 
-> 복사 플러그인을 통한 멀티 싱크 예제 설명
+### 3.2 `events`  데이터를 `names` 테이블과 조인하여 저장합니다
 
-### 2. `airflow` 같은 파이프라인 서비스를 통해 의존성 및 스케줄링 통합
-> 에어플로우 스케줄링 및 의존성 예제 설명
+> `Github: Spark Batch` "[데이터 엔지니어링 프로젝트](https://github.com/psyoblade/ssm-seoul-data-engineer/blob/main/spark/README.md)" 예제 프로젝트를 통해서 스파크 배치 작업의 기본 구현에 대해 리마인드가 되셨다면, `/fluentd/target/lambda/batch` 경로에 저장된 `events` 데이터와 `/home/jovyan/work/data/names` 경로에 저장된 `names` 테이블을 조인하여 `/home/jovyan/work/tmp/output` 경로에 `json` 포맷으로 저장합니다.
 
+#### 1. 스파크 세션을 생성하고 데이터 소스를 읽어옵니다
+
+> 스파크 애플리케이션 기동을 위한 스파크 세션을 생성합니다
+
+```python
+# 코어 스파크 라이브러리를 임포트 합니다
+from pyspark.sql import *
+from pyspark.sql.functions import *
+from pyspark.sql.types import *
+from IPython.display import display, display_pretty, clear_output, JSON
+
+spark = (
+    SparkSession
+    .builder
+    .appName("Data Engineer Training Course")
+    .config("spark.sql.session.timeZone", "Asia/Seoul")
+    .getOrCreate()
+)
+
+# 노트북에서 테이블 형태로 데이터 프레임 출력을 위한 설정을 합니다
+from IPython.display import display, display_pretty, clear_output, JSON
+spark.conf.set("spark.sql.repl.eagerEval.enabled", True) # display enabled
+spark.conf.set("spark.sql.repl.eagerEval.truncate", 100) # display output columns size
+
+# 공통 데이터 위치
+home_jovyan = "/home/jovyan"
+work_data = f"{home_jovyan}/work/data"
+work_dir=!pwd
+work_dir = work_dir[0]
+
+# 로컬 환경 최적화
+spark.conf.set("spark.sql.shuffle.partitions", 5) # the number of partitions to use when shuffling data for joins or aggregations.
+spark.conf.set("spark.sql.streaming.forceDeleteTempCheckpointLocation", "true")
+spark
+```
+
+```python
+# events 로그를 streamLogs 라는 데이터프레임으로 읽어와서 스키마와 데이터를 출력합니다
+eventsPath = "/fluentd/target/lambda/batch"
+streamLogs = (
+    spark
+    .read
+    .option("inferSchema", "true")
+    .json(eventsPath)
+).withColumn("mod_id", expr("id % 10"))
+streamLogs.printSchema()
+streamLogs.show(truncate=False)
+
+# names 테이블을 nameStatic 이라는 데이터프레임으로 읽어와서 스티마와 데이터를 출력합니다
+namePath = "/home/jovyan/work/data/names"
+nameStatic = (
+    spark
+    .read
+    .option("inferSchema", "true")
+    .json(namePath)
+)
+nameStatic.printSchema()
+nameStatic.show(truncate=False)
+```
+
+```python
+# 조인을 위한 조건과 조인 후에 스키마 및 데이터를 출력합니다
+expression = streamLogs.mod_id == nameStatic.uid
+staticJoin = streamLogs.join(nameStatic, expression, "leftOuter")
+staticJoin.printSchema()
+staticJoin.show(10, truncate=False)
+
+# 최종 출력 스키마를 일치시키기 위해서 변환작업을 수행하고, 스키마와 데이터를 확인합니다
+staticResult = (
+    staticJoin
+    .withColumnRenamed("id", "user_id")
+    .withColumnRenamed("name", "user_name")
+    .drop("mod_id")
+)
+staticResult.printSchema()
+staticResult.show(truncate=False)
+
+# 최종 결과를 tmp/output 경로에 저장합니다
+targetPath = "/home/jovyan/work/tmp/output"
+staticResult.write.mode("overwrite").json(targetPath)
+```
+
+>  생성되는 데이터를 그대로 사용하는 경우 완전히 일치하는 결과를 얻을 수는 없지만, 원본 소스가 동일하다면 완전히 일치하는 결과가 나와야만 합니다
+
+
+
+### 3.3 `kafka-hadoop-index` 통하여 `druid` 에 적재합니다
+
+>  적재된 데이터를 `Local Disk` 작업을 통해서 `/notebooks/output` 경로를 지정하여, 일괄 색인을 수행하고 `events_batch` 테이블에 적재합니다
+
+![load](images/druid-02-load-kafka.png)
+
+
+
+## 4. 아키텍처 개선 및 확장 검토
+
+### 4.1 `fluentd` 통하여 멀티 싱크를 통하여 파이프라인 간소화
+
+> `fluentd` 의 `copy` 및 `label` 지시자를 사용하여 하나의 데이터소스를 여러개의 싱크로 지정할 수 있습니다
+
+```xml
+# cat > /fluentd/config/lambda-v5.conf
+<source>
+  @type dummy
+  tag info
+  auto_increment_key id
+  dummy {"hello":"ssm-seoul"}
+</source>
+
+# https://docs.fluentd.org/v/0.12/filter/record_transformer
+<filter info>
+    @type record_transformer
+    enable_ruby
+    <record>
+        time ${Time.at(time).strftime('%Y-%m-%d %H:%M:%S')}
+    </record>
+</filter>
+
+# https://docs.fluentd.org/output/copy
+# https://docs.fluentd.org/output/relabel
+<match test>
+  @type copy
+  <store>
+    @type relabel
+    @label @KAFKA
+  </store>
+  <store>
+    @type relabel
+    @label @HDFS
+  </store>
+</match>
+
+# https://docs.fluentd.org/v/0.12/output/stdout
+<match debug>
+  @type stdout
+</match>
+
+# https://docs.fluentd.org/v/0.12/output/kafka
+<label @KAFKA>
+  <match info>
+    @type kafka_buffered
+
+    # list of seed brokers
+    brokers kafka:9093
+
+    # buffer settings
+    buffer_type file
+    buffer_path /var/log/td-agent/buffer/tmp
+    flush_interval 3s
+
+    # topic settings
+    default_topic events
+
+    # data type settings
+    output_data_type json
+    compression_codec gzip
+
+    # producer settings
+    max_send_retries 1
+    required_acks -1
+  </match>
+</label>
+
+# https://docs.fluentd.org/v/0.12/buffer/file
+<label @HDFS>
+  <match info>
+      @type file
+      @log_level info
+      add_path_suffix true
+      path_suffix .json
+      path /fluentd/target/lambda/batch/names.%Y%m%d.%H
+      <format>
+          @type json
+      </format>
+      <buffer time>
+          timekey 1h
+          timekey_use_utc false
+          timekey_wait 10s
+          timekey_zone +0900
+          flush_mode immediate
+          flush_thread_count 8
+      </buffer>
+  </match>
+</label>
+```
+
+```bash
+# docker: fluentd
+fluentd -c /fluentd/config/lambda-v5.conf
+```
+
+> 기존의 파이프라인을 하나로 통합하여 운영할 수 있습니다
+
+### 4.2 스케줄링 서비스를 통해 의존성 및 스케줄링 통합
+
+>  `Airflow`  혹은 `Crontab` 등의 스케줄러를 통해 `Spark` 작업을 주기적으로 수행하게 하여 주기적으로 배치 작업을 통해서 실시간 지표를 갱신하도록 하는 것이 일반적인 구성입니다
