@@ -1,32 +1,88 @@
 # 카파 아키텍처 실습
 > 벌크 색인 대신에 모든 데이터를 스트리밍 형태로 유지하고, 스트림 파이프라인을 데이터 저장소로 인지하고 이를 통해 기본적인 데이터 처리 및 재처리를 전재하고 있기 때문에 서빙 레이어에서 `MySQL 혹은 MongoDB`같은 동적 업데이트를 지원하는 엔진이 적합합니다. 혹은 스트림 소스를 그대로 노출하고 컨슈머를 통해 도메인 별로 애플리케이션을 구성하는 `Data Mesh` 아키텍처로 접근하기도 합니다
 
+## 1. 최신버전 업데이트
 
-## 1. 스트리밍 데이터 스테이징 토픽 생성
+> 원격 터미널에 접속하여 관련 코드를 최신 버전으로 내려받고, 과거에 실행된 컨테이너가 없는지 확인하고 종료합니다  
+
+### 1-1. 최신 소스를 내려 받습니다
+
+> 자주 사용하는 명령어는 `alias` 를 걸어둡니다  
+
+```bash
+# terminal
+cd ~/work/ssm-seoul-data-engineer
+git pull
+
+# alias
+alias d="docker-compose"
+```
+
+### 1-2. 이전에 기동된 컨테이너가 있다면 강제 종료합니다
+
+```bash
+# terminal 
+docker rm -f `docker ps -aq`
+`docker ps -a` 명령으로 결과가 없다면 모든 컨테이너가 종료되었다고 보시면 됩니다
+```
+
+### 1-3. 실습을 위한 이미지를 내려받고 컨테이너를 기동합니다
+
+```bash
+# 컨테이너 기동
+cd ~/work/ssm-seoul-data-engineer/kappa
+docker-compose pull
+docker-compose up -d
+
+# 컨테이너 확인
+docker-compose ps
+```
+
+
+
+## 2. 스트리밍 데이터 스테이징 토픽 생성
+
 >  카파 아키텍처의 기본 스트리밍 파이프라인을 구성하여, 람다 아키텍처의 원본 테이블의 역할을 수행하는 스테이징 토픽을 생성합니다. 이러한 스테이징 소스를 생성 시에는 정보가 유실되지 않도록 유의해야 하며, 누구나 사용할 수 있는 데이터 소스를 가정하여 작성해야 하며, 생성된 토픽의 스키마 정보 (컬럼 이름, 데이터 타입 등)도 문서화 되어야 합니다
 * stage pipeline : fluentd -> kafka -> spark-stream-stage -> kafka 
 
-### 1.1 `fluentd` 통한 예제 데이터 생성
+### 2.1 `fluentd` 통한 예제 데이터 생성
+
 > fluentd dummy plugin 을 통해 `{id:number, time:timestamp}` 형식의 예제 데이터 생성
 
-### 1.2 `kafka` 클러스터에 `events` 토픽에 저장된 데이터 확인
+* 데이터 생성을 위해 `fluentd` 컨테이너에 접속합니다
+
+```bash
+# 개별 컨테이너 접속 방법 : docker-compose exec <container-name> bash
+docker-compose exec fluentd bash
+```
+
+* 
+
+### 2.2 `kafka` 클러스터에 `events` 토픽에 저장된 데이터 확인
+
 > `kafka-console-consumer`를 통해 저장된 토픽 데이터 확인
 
-### 1.3 `kafka` 클러스터에 `names` 글로벌 토픽에 저장된 데이터 조인
+### 2.3 `kafka` 클러스터에 `names` 글로벌 토픽에 저장된 데이터 조인
+
 > 카프카의 글로벌 테이블인 `names`에 0~5번 id 값에 매칭되는 값을 생성하여 저장
 
-### 1.4  `spark streaming` 통해 생성된 토픽을 콘솔에 출력
+### 2.4  `spark streaming` 통해 생성된 토픽을 콘솔에 출력
+
 > 스파크 스트리밍을 통해 `events` 토픽의 `id` 와 `names` 테이블의 `id, id_name` 컬럼을 조인하여 정상적인 조회를 확인합니다
 > 이 토픽에는 원본 토픽을 보강(enrich)한 상태로 저장하되, 정보의 유실(집계 등)이 없는 상태로 저장하는 것이 일반적입니다
 
-### 1.5 1차 가공된 데이터를 `events_stage` 토픽에 저장
+### 2.5 1차 가공된 데이터를 `events_stage` 토픽에 저장
+
 > 데이터를 `events_stage`에 잘 저장되었는지 확인하고, 이 토픽이 스테이징된 데이터 원본으로 활용될 테이블(토픽)입니다 
 
-### 1.6 스테이징 데이터를 `kafka-console`을 통해 확인합니다
+### 2.6 스테이징 데이터를 `kafka-console`을 통해 확인합니다
+
 > 카프카 서버에 접속 후, 콘솔에서 생성된 데이터가 정상적으로 조회 되는 지 확인합니다
 
 
-## 2. 스트리밍 집계 파이프라인 생성
+
+## 3. 스트리밍 집계 파이프라인 생성
+
 >  `event_stage` 토픽은 24시간 수신되는 스트리밍 로그 토픽이며, 이를 활용하여 1차 가공 데이터를 생성하고 이를 `MySQL` 테이블에 저장하는 예제를 실습합니다
 * stream pipeline : kafka -> spark-stream-agg -> mysql -> phpmyadmin
 
@@ -59,8 +115,9 @@
 > `MySQL` 에 저장되는 이전 일자의 지표가 잘 수정되는 지 확인합니다
 * backup pipeline : spark-stream-agg -> mysql
 
-
 ## 4. 스트리밍 파이프라인의 확장
+
 ### 4.1 유사한 방식으로 `mongodb` 에 집계 혹은 가공 데이터를 적재하는 예제를 실습합니다
+
 > `mongo-express` 같은 도구를 통해 확인이 가능합니다
 
