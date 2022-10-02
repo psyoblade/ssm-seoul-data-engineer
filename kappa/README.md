@@ -47,6 +47,7 @@ docker-compose ps
 ## 2. 스트리밍 데이터 스테이징 토픽 생성
 
 >  카파 아키텍처의 기본 스트리밍 파이프라인을 구성하여, 람다 아키텍처의 원본 테이블의 역할을 수행하는 스테이징 토픽을 생성합니다. 이러한 스테이징 소스를 생성 시에는 정보가 유실되지 않도록 유의해야 하며, 누구나 사용할 수 있는 데이터 소스를 가정하여 작성해야 하며, 생성된 토픽의 스키마 정보 (컬럼 이름, 데이터 타입 등)도 문서화 되어야 합니다
+
 ![processing-layer](images/processing-layer.png)
 
 ### 2.1 `fluentd` 통한 더미 데이터 카프카로 저장
@@ -485,6 +486,7 @@ bin/kafka-console-consumer.sh $boot --topic events_stages
 ## 3. 스트리밍 집계 파이프라인 생성
 
 >  `event_stages` 토픽은 24시간 수신되는 스트리밍 로그 토픽이며, 이를 활용하여 1차 가공 데이터를 생성하고 이를 `MySQL` 테이블에 저장하는 예제를 실습합니다
+
 ![processing-layer](images/processing-layer.png)
 
 ### 3.1 `events_stages` 토픽을 활용하여 집계 지표를 생성합니다
