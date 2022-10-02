@@ -485,7 +485,7 @@ bin/kafka-console-consumer.sh $boot --topic events_stages
 ## 3. 스트리밍 집계 파이프라인 생성
 
 >  `event_stages` 토픽은 24시간 수신되는 스트리밍 로그 토픽이며, 이를 활용하여 1차 가공 데이터를 생성하고 이를 `MySQL` 테이블에 저장하는 예제를 실습합니다
-![processing-layer](processing-layer.png)
+![processing-layer](images/processing-layer.png)
 
 ### 3.1 `events_stages` 토픽을 활용하여 집계 지표를 생성합니다
 
