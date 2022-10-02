@@ -49,6 +49,7 @@ docker-compose ps
 ## 2. 스피드 레이어를 통한 데이터 및 지표 적재
 
 > 람다 아키텍처를 통한 비즈니스 로직은 동일하지만 집계를 통한 스트리밍 지표 적재
+
 ![speed-layer](images/speed-layer.png)
 
 ### 2.1 `fluentd` 통한 더미 데이터 카프카로 저장
@@ -219,7 +220,7 @@ bin/kafka-console-consumer.sh $boot --topic events
 
 ### 2.2  `events` 토픽을 읽어서 `events_names` 토픽에 저장
 
->   `Keynote: Spark Streaming Application` 문서를 통해 기본적인 스트리밍 애플리케이션 동작 방식을 이해 하셨다면, `notebook` 컨테이너를 기동하여 실습을 진행합니다.
+>    `Keynote: Spark Streaming Application` 문서를 통해 기본적인 스트리밍 애플리케이션 동작 방식을 이해 하셨다면, `notebook` 컨테이너를 기동하여 실습을 진행합니다.
 
 #### 1. `notebook` 컨테이너 기동 및 접속
 
@@ -851,3 +852,19 @@ fluentd -c /fluentd/config/lambda-v5.conf
 ### 4.2 스케줄링 서비스를 통해 의존성 및 스케줄링 통합
 
 >  `Airflow`  혹은 `Crontab` 등의 스케줄러를 통해 `Spark` 작업을 주기적으로 수행하게 하여 주기적으로 배치 작업을 통해서 실시간 지표를 갱신하도록 하는 것이 일반적인 구성입니다
+
+
+
+## 5. 모든 컨테이너 종료
+
+> 기동된 모든 컨테이너가 정상 종료되어야 다음 실습이 원활하게 수행됩니다.
+
+```bash
+# terminal
+cd ~/work/ssm-seoul-data-engineer/lambda
+docker-compose down
+
+# docker-compose.yml 파일이 없는 위치에서 모든 컨테이너 강제 종료
+docker rm -f `docker ps -aq`
+```
+
