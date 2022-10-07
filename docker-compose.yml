@@ -1,0 +1,14 @@
+version: "3"
+
+services:
+  ubuntu:
+    container_name: ubuntu
+    image: psyoblade/data-engineer-ubuntu:20.04
+    restart: always
+    stdin_open: true
+    tty: true
+
+networks:
+  default:
+    name: ssm_seoul_data_engineer_network
+
