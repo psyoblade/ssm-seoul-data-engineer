@@ -26,15 +26,8 @@ cd ~/work/ssm-seoul-data-engineer
 # 우분투 컨테이너 기동 테스트
 docker-compose up -d ubuntu
 docker-compose exec ubuntu echo hello ssm seoul
+
+# 우분투 컨테이너 종료
+docker-compose down
 ```
 
-
-
-## rename master to main
-
-```bash
-git branch -m master main
-git fetch origin
-git branch -u origin/main main
-git remote set-head origin -a
-```
