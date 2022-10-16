@@ -163,7 +163,7 @@ bin/kafka-console-consumer.sh $boot --topic events
 
 ### 2.2  `events` 토픽을 읽고 `events_stages` 토픽에 저장
 
->    `notebook` 컨테이너를 기동하여 아래의 조건에 맞게 가공 및 데이터 보정 이후에 `events_stages` 토픽으로 메시지를 다시 포워드 합니다.
+>     `Keynote: 데이터 레이크 2일차 6교시 - 아파치 스파크 스트리밍` 문서를 통해 다시 한 번 리마인드 하시고, `notebook` 컨테이너를 기동하여 아래의 조건에 맞게 가공 및 데이터 보정 이후에 `events_stages` 토픽으로 메시지를 다시 포워드 합니다.
 
 #### 변환 규칙
 

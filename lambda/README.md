@@ -54,7 +54,7 @@ docker-compose ps
 
 ### 2.1 `fluentd` 통한 더미 데이터 카프카로 저장
 
->  `Keynote: Fluentd Core` 문서를 통해 기본 동작 방식과 구문에 대해 이해가 되셨다면, 플루언트디 컨테이너 기동 `docker-compose up -d fluentd` 하여 실습을 진행합니다
+>  `Keynote: 데이터 레이크 2일차 5교시 - 플루언트디 코어` 문서를 통해 기본 동작 방식과 구문에 대해 이해가 되셨다면, 플루언트디 컨테이너 기동 `docker-compose up -d fluentd` 하여 실습을 진행합니다
 #### 1. `fluentd` 컨테이너 기동 및 접속
 
 ```bash
@@ -220,7 +220,7 @@ bin/kafka-console-consumer.sh $boot --topic events
 
 ### 2.2  `events` 토픽을 읽어서 `events_names` 토픽에 저장
 
->    `Keynote: Spark Streaming Application` 문서를 통해 기본적인 스트리밍 애플리케이션 동작 방식을 이해 하셨다면, `notebook` 컨테이너를 기동하여 실습을 진행합니다.
+>    `Keynote: 데이터 레이크 2일차 6교시 - 아파치 스파크 스트리밍` 문서를 통해 기본적인 스트리밍 애플리케이션 동작 방식을 이해 하셨다면, `notebook` 컨테이너를 기동하여 실습을 진행합니다.
 
 #### 1. `notebook` 컨테이너 기동 및 접속
 
@@ -654,7 +654,7 @@ fluentd -c /fluentd/config/lambda-v4.conf
 
 ### 3.2 `events`  데이터를 `names` 테이블과 조인하여 저장합니다
 
-> `Github: Spark Batch` "[데이터 엔지니어링 프로젝트](https://github.com/psyoblade/ssm-seoul-data-engineer/blob/main/spark/README.md)" 예제 프로젝트를 통해서 스파크 배치 작업의 기본 구현에 대해 리마인드가 되셨다면, `/fluentd/target/lambda/batch` 경로에 저장된 `events` 데이터와 `/home/jovyan/work/data/names` 경로에 저장된 `names` 테이블을 조인하여 `/home/jovyan/work/tmp/output` 경로에 `json` 포맷으로 저장합니다.
+>  `Keynote: 데이터 레이크 3일차 4교시 - 아파치 스파크 배치` 문서를 통해 기본 동작 방식과 구문에 대해 이해가 되셨다면, `/fluentd/target/lambda/batch` 경로에 저장된 `events` 데이터와 `/home/jovyan/work/data/names` 경로에 저장된 `names` 테이블을 조인하여 `/home/jovyan/work/tmp/output` 경로에 `json` 포맷으로 저장합니다.
 
 #### 1. 스파크 세션을 생성하고 데이터 소스를 읽어옵니다
 
