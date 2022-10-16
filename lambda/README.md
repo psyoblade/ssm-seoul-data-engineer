@@ -227,7 +227,7 @@ bin/kafka-console-consumer.sh $boot --topic events
 ```bash
 # terminal
 docker-compose up -d notebook
-docker-comopse logs notebook | grep 127
+docker-compose logs notebook | grep 127
 # [JupyterLab] http://127.0.0.1:8888/labtoken=d0ffa88b4ca509687f7a6502e4376f1bbf198462f83c2
 ```
 
