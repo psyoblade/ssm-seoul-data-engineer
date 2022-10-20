@@ -547,7 +547,7 @@ bin/kafka-console-consumer.sh $boot --topic events_names
 > 아래의 명령을 통해서 설정 파일을 생성하고, 수정하여 다시 덮어쓸 수도 있습니다
 
 ```bash
-docker-compose run turnilo turnilo --druid http://druid:8082 --print-config > turnilo/config/new-confing.yml
+docker-compose run turnilo turnilo --druid http://druid:8082 --print-config > turnilo/config/new-config.yml
 ```
 
 #### 2. 터닐로가 드루이드 테이블을 인식하게 하기 위해 컨테이너를 재시작합니다
