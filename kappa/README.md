@@ -31,7 +31,7 @@ docker rm -f `docker ps -aq`
 
 ```bash
 # 개별 컨테이너 기동 : docker-compose.yml 파일의 서비스 이름을 명시
-docker-compose up -d <service-name>
+# docker-compose up -d <service-name>
 
 # 전체 컨테이너 기동 : 서비스 이름을 명시하지 않으면 모든 컨테이너 기동
 cd ~/work/ssm-seoul-data-engineer/kappa
@@ -163,7 +163,7 @@ bin/kafka-console-consumer.sh $boot --topic events
 
 ### 2.2  `events` 토픽을 읽고 `events_stages` 토픽에 저장
 
->     `Keynote: 데이터 레이크 2일차 6교시 - 아파치 스파크 스트리밍` 문서를 통해 다시 한 번 리마인드 하시고, `notebook` 컨테이너를 기동하여 아래의 조건에 맞게 가공 및 데이터 보정 이후에 `events_stages` 토픽으로 메시지를 다시 포워드 합니다.
+>      `Keynote: 데이터 레이크 2일차 6교시 - 아파치 스파크 스트리밍` 문서를 통해 다시 한 번 리마인드 하시고, `notebook` 컨테이너를 기동하여 아래의 조건에 맞게 가공 및 데이터 보정 이후에 `events_stages` 토픽으로 메시지를 다시 포워드 합니다.
 
 #### 변환 규칙
 
@@ -183,7 +183,7 @@ bin/kafka-console-consumer.sh $boot --topic events
 ```bash
 # terminal
 docker-compose up -d notebook
-docker-comopse logs notebook | grep 127
+docker-compose logs notebook | grep 127
 # [JupyterLab] http://127.0.0.1:8888/labtoken=d0ffa88b4ca509687f7a6502e4376f1bbf198462f83c2
 ```
 
@@ -289,7 +289,7 @@ kafkaSelector = (
       , "(events.id % 100) + 1 as age"
       , "events.*"
     )
-  	.select("time", "user_id", "dept_id", "gender", "age", "hello", "id")
+    .select("time", "user_id", "dept_id", "gender", "age", "hello", "id")
 )
 kafkaSelector.printSchema()
 ```
@@ -321,7 +321,7 @@ kafkaTrigger = (
 
 # 파이썬의 경우 콘솔 디버깅이 노트북 표준출력으로 나오기 때문에, 위에서 선언한 함수로 조회합니다
 kafkaQuery = kafkaTrigger.start()
-displayStream(queryName, f"select * from {queryName} order by mod_id desc", 10, 6)
+displayStream(queryName, f"select * from {queryName} order by id desc", 10, 6)
 kafkaQuery.stop()
 ```
 
@@ -339,7 +339,7 @@ nameStatic = (
     .read
     .option("inferSchema", "true")
     .json(namePath)
-)
+).withColumnRenamed("name", "user_name")
 
 # 스키마와 데이터를 확인합니다
 nameStatic.printSchema()
@@ -352,7 +352,7 @@ deptStatic = (
     .read
     .option("inferSchema", "true")
     .json(deptPath)
-)
+).withColumnRenamed("name", "dept_name")
 
 # 스키마와 데이터를 확인합니다
 deptStatic.printSchema()
@@ -581,9 +581,9 @@ kafkaSchema = (
     .add(StructField("time", StringType()))
     .add(StructField("user_id", LongType()))
     .add(StructField("user_name", StringType()))
-  	.add(StructField("dept_name", StringType()))
-  	.add(StructField("gender", StringType()))
-  	.add(StructField("age", LongType()))
+    .add(StructField("dept_name", StringType()))
+    .add(StructField("gender", StringType()))
+    .add(StructField("age", LongType()))
     .add(StructField("hello", StringType()))
     .add(StructField("id", LongType()))
 )
@@ -606,7 +606,7 @@ kafkaSelector.printSchema()
 
 ```python
 # 콘솔로 출력하기 위해서 memory 기반의 테이블로 생성하며 워터마크 적용을 위한 timestamp 컬럼을 생성합니다
-query_name "memory_sink"
+query_name = "memory_sink"
 memoryWriter = (
     kafkaSelector
     .selectExpr("to_timestamp(time) as timestamp", "user_name")
@@ -631,7 +631,7 @@ memoryTrigger = (
 ```python
 memoryQuery = memoryTrigger.start()
 displayStream(query_name, f"select * from {query_name} order by window asc", 10, 6)
-memoryQuery.explain(True)
+# memoryQuery.explain(True)
 memoryQuery.stop()
 ```
 
@@ -646,7 +646,7 @@ memoryQuery.stop()
 sink_table = "events_users_v1"
 
 def saveToMySql(dataFrame, batchId):
-  	options = "useUnicode=true&serverTimezone=Asia/Seoul"
+    options = "useUnicode=true&serverTimezone=Asia/Seoul"
     url = f"jdbc:mysql://scott:tiger@mysql:3306/default?{options}"
     writer = (
         dataFrame
@@ -667,9 +667,9 @@ query_name = "jdbc_sink"
 jdbcWriter = (
     kafkaSelector
     .selectExpr("to_timestamp(time) as timestamp", "user_name")
-    .withWatermark("timestamp", "1 minute")
-    .groupBy("user_name", window("timestamp", "1 minute", "1 minute")).count().alias("count")
-    .select("window.start", "window.end", "count")
+    .withWatermark("timestamp", "15 seconds")
+    .groupBy(window("timestamp", "10 seconds", "10 seconds"), "user_name").count().alias("count")
+    .select("window.start", "window.end", "user_name", "count")
     .writeStream
     .queryName(query_name)
     .foreachBatch(saveToMySql)
@@ -751,8 +751,8 @@ jdbcWriter = (
     kafkaSelector
     .selectExpr("to_timestamp(time) as timestamp", "user_name")
     .withWatermark("timestamp", watermark_time)
-    .groupBy("user_name", window("timestamp", "1 minute", "1 minute")).count().alias("count")
-    .select("window.start", "window.end", "count")
+    .groupBy(window("timestamp", "1 minute", "1 minute"), "user_name").count().alias("count")
+    .select("window.start", "window.end", "user_name", "count")
     .writeStream
     .queryName(query_name)
     .foreachBatch(saveToMySql)
@@ -773,7 +773,6 @@ jdbcTrigger = (
 #### 3. 해당 일자의 지표가 정상적으로 수정이 되는지 확인합니다
 
 >  `phpmyadmin` 웹 화면을 통해서 적재되는 지 확인할 수 있으며, 이 때에 적재가 정상적으로 `events_users_v1` 테이블과 동일한 상태로 `catch-up` 되었다면 `v1` 테이블을 바라보던 애플리케이션을 단계적으로 `v2` 를 바라보도록 설정을 변경하면 됩니다.
-
 
 ### 3.1 스트리밍 파이프라인의 확장
 

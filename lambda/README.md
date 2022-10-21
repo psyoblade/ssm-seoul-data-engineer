@@ -33,7 +33,7 @@ docker rm -f `docker ps -aq`
 
 ```bash
 # 개별 컨테이너 기동 : docker-compose.yml 파일의 서비스 이름을 명시
-docker-compose up -d <service-name>
+# docker-compose up -d <service-name>
 
 # 전체 컨테이너 기동 : 서비스 이름을 명시하지 않으면 모든 컨테이너 기동
 cd ~/work/ssm-seoul-data-engineer/lambda
@@ -658,6 +658,14 @@ fluentd -c /fluentd/config/lambda-v4.conf
 
 #### 1. 스파크 세션을 생성하고 데이터 소스를 읽어옵니다
 
+> 컨테이너를 기동합니다
+
+```bash
+# terminal
+docker-compose up -d notebook
+docker-compose logs notebook | grep 127
+```
+
 > 스파크 애플리케이션 기동을 위한 스파크 세션을 생성합니다
 
 ```python
@@ -746,9 +754,16 @@ staticResult.write.mode("overwrite").json(targetPath)
 
 >  적재된 데이터를 `Local Disk` 작업을 통해서 `/notebooks/output` 경로를 지정하여, 일괄 색인을 수행하고 `events_batch` 테이블에 적재합니다
 
+```bash
+# terminal
+docker-compose up -d druid
+```
+
+> http://localhost:8088/ 에 접속하여 로컬 파일을 로딩합니다.
+
 ![load](images/druid-02-load-kafka.png)
 
-
+> 해당 작업(Task)은 일회성 작업으로 수행되며 모든 색인을 덮어씁니다 
 
 ## 4. 아키텍처 개선 및 확장 검토
 
@@ -852,8 +867,6 @@ fluentd -c /fluentd/config/lambda-v5.conf
 ### 4.2 스케줄링 서비스를 통해 의존성 및 스케줄링 통합
 
 >  `Airflow`  혹은 `Crontab` 등의 스케줄러를 통해 `Spark` 작업을 주기적으로 수행하게 하여 주기적으로 배치 작업을 통해서 실시간 지표를 갱신하도록 하는 것이 일반적인 구성입니다
-
-
 
 ## 5. 모든 컨테이너 종료
 
