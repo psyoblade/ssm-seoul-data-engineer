@@ -119,7 +119,7 @@ docker-compose exec fluentd bash
 
 #### 3. 카프카 컨테이너 기동 및 메시지 전송
 
-> 카프카로 메시지를 전송하기 전에 카프카 컨테이너를 기동합니다
+> 카프카로 메시지를 전송하기 전에 **별도의 터미널**에서 카프카 컨테이너를 기동합니다
 
 ```bash
 # terminal
@@ -698,7 +698,7 @@ displayStatus(query_name, jdbcQuery, 100, 6)
 jdbcQuery.stop()
 ```
 
->  웹 페이지에 `http://localhos:80` 페이지에 접속하여 서버: `mysql`, 사용자명: `scott`, 암호: `tiger` 로 `default` 데이터베이스로 접속합니다
+>  웹 페이지에 `http://localhost:80` 페이지에 접속하여 서버: `mysql`, 사용자명: `scott`, 암호: `tiger` 로 `default` 데이터베이스로 접속합니다
 
 ### 3.3 기타 `age`, `dept` 등의 기준으로 집계 테이블을 생성합니다
 
