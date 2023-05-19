@@ -18,10 +18,15 @@ git --version
 mkdir -p ~/work
 cd ~/work
 
-# 포크한 URL 통하여 로컬에 레포지토리 클론
+# [최초] 포크한 URL 통하여 로컬에 레포지토리 클론
 github_id="깃헙아이디"
 git clone https://github.com/${github_id}/ssm-seoul-data-engineer.git
 cd ~/work/ssm-seoul-data-engineer
+
+# [갱신] 기 클론한 레포지토리의 경우 업데이트
+github_id="깃헙아이디"
+cd ~/work/ssm-seoul-data-engineer
+git pull
 
 # 우분투 컨테이너 기동 테스트
 docker-compose up -d ubuntu
@@ -29,5 +34,5 @@ docker-compose exec ubuntu echo hello ssm seoul
 
 # 우분투 컨테이너 종료
 docker-compose down
-```
 
+```
