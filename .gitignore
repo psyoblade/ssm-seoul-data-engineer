@@ -1,4 +1,7 @@
 # Custom
+*.crc
+.metadata/
+.signals/
 env
 run.sh
 backup/
