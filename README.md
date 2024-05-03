@@ -1,5 +1,5 @@
 # SSM Seoul - Practical Issues in Data Engineering
-> 2022 Practical Issues in Data Engineering for DBA Course
+> Practical Issues in Data Engineering for DBA Course
 
 ## 도커 컨테이너 정상 확인
 
