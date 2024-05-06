@@ -143,3 +143,50 @@ docker-compose exec fluentd bash
 for x in $(seq 1 100); do tree -L 1 /fluentd/source; tree -L 2 /fluentd/target; sleep 10; done
 ```
 
+
+
+## Appendix
+
+### Trials & Errors
+
+#### [git tag](https://git-scm.com/book/en/v2/Git-Basics-Tagging)
+
+```bash
+git tag -a v1.0 -m "[tag] apply alias tag"
+git tag
+git show v1.0
+git push origin v1.0
+```
+
+#### [port usages](https://pimylifeup.com/macos-kill-process-port/)
+
+```bash
+PORT=3306
+sudo lsof -i tcp:$PORT
+sudo lsof -i -P | grep LISTEN | grep :$PORT
+```
+
+#### [restart docker](https://danielkorn.io/post/restart-docker-mac/)
+
+```bash
+osascript -e 'quit app "Docker"' # stop docker
+open -a Docker # start docker
+docker container prune
+docker network prune
+```
+
+#### [The server time zone value 'KST' is unrecognized or represents more than one time zone](https://www.lesstif.com/dbms/mysql-jdbc-the-server-time-zone-value-kst-is-unrecognized-or-represents-more-than-one-time-zone-100204548.html)
+
+```bash
+# cat /etc/my.cnf
+[mysqld]
+default_time_zone = '+09:00'
+
+# restart mysql
+sudo systemctl restart mysql
+
+# jdbc connection string
+jdbc:mysql://localhost/db?useUnicode=true&serverTimezone=Asia/Seoul
+
+```
+
