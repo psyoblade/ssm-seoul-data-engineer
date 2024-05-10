@@ -554,8 +554,9 @@ load data local inpath '/opt/hive/examples/imdb.tsv' into table imdb_movies;
 
 ```bash
 # terminal
+cd ~/work/ssm-seoul-data-engineer/hive
 docker-compose exec hive-server bash
-hadoop fs -ls /user/hive/warehouse/testdb/
+hadoop fs -ls /user/hive/warehouse
 ```
 > 적재된 테이블이 출력되면 정답입니다
 
