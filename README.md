@@ -1,14 +1,16 @@
 # SSM Seoul - Practical Issues in Data Engineering
+
 > Practical Issues in Data Engineering for DBA Course
+
+## 설치 확인
+
+* 도커 데스크탑 엔진 설치
+* 윈도우의 경우 WSL2
+* 깃 클라이언트 설치
 
 ## 도커 컨테이너 정상 확인
 
 ```bash
-# 설치 확인 사항
-#* 도커 데스크탑 엔진 설치
-#* 윈도우의 경우 WSL2
-#* 깃 클라이언트 설치
-
 # 도커 및 컴포즈 버전 확인
 docker --version
 docker-compose --version
@@ -37,8 +39,6 @@ docker-compose down
 
 ```
 
-
-
 ## Apache Sqoop Tutorial
 
 ### 컨테이너 기동
@@ -49,15 +49,14 @@ docker rm -f `docker ps -aq | awk '{print $1}'` # 이전에 사용된 컨테이�
 docker container prune # 이전에 사용된 캐시 컨테이너 삭제
 docker network prune # 이전에 사용된 캐시 네트워크 삭제
 docker-compose up -d
-
-# 예제 테이블 생성위해 mysql 접속
-docker-compose exec mysql mysql -uscott -ptiger
+docker-compose ps
 ```
 
 ### 예제 테이블 생성
 
 ```sql
 # 예제 테이블 생성위해 mysql 접속
+cd ~/work/ssm-seoul-data-engineer/sqoop
 docker-compose exec mysql mysql -uscott -ptiger
 
 # 예제 테이블 생성 및 데이터 입력
@@ -78,6 +77,7 @@ INSERT INTO student VALUES (2, 'psyoblade', 'psyoblade@naver.com', 28, 'female')
 
 ```bash
 # 예제 테이블 생성위해 sqoop 서버 접속
+cd ~/work/ssm-seoul-data-engineer/sqoop
 docker-compose exec sqoop bash
 
 # 예제 테이블 수집 위한 명령어 실행
@@ -91,8 +91,6 @@ cat ~/target/student/part-m-00000
 1,suhyuk,suhyuk@gmai.com,18,male
 2,psyoblade,psyoblade@naver.com,28,female
 ```
-
-
 
 ## TrasureData Fluentd Tutorial
 
@@ -110,7 +108,6 @@ docker-compose up -d
 
 ```bash
 # 임의의 터미널에서 컨테이너 기동
-docker-compose up -d
 docker-compose exec fluentd bash
 
 # 이전에 실행된 파일 삭제
@@ -127,23 +124,67 @@ more /etc/fluentd/fluent.conf
 
 ```bash
 # 별도의 컨테이너 생성
+cd ~/work/ssm-seoul-data-engineer/fluentd
 docker-compose exec fluentd bash
 
 # 예제 더미로그 생성 파이썬 실행
 more flush_logs.py
+python3 flush_logs.py
 ```
 
 ### 파일 수집 적재 경로 확인
 
 ```bash
 # 별도의 컨테이너 생성
+cd ~/work/ssm-seoul-data-engineer/fluentd
 docker-compose exec fluentd bash
 
 # 적재 대상 경로에 파일이 잘 생성되는 지 확인
 for x in $(seq 1 100); do tree -L 1 /fluentd/source; tree -L 2 /fluentd/target; sleep 10; done
 ```
 
+## Apache Hive Tutorial
 
+### 컨테이너 기동
+
+> 하이브 실행 및 코드 설명은 "[데이터 엔지니어링 프로젝트](https://github.com/psyoblade/ssm-seoul-data-engineer/tree/main/hive)" 페이지에 상세히 설명되어 있습니다
+
+```bash
+cd ~/work/ssm-seoul-data-engineer/hive
+docker rm -f `docker ps -aq | awk '{print $1}'` # 이전에 사용된 컨테이너가 존재하는 경우 삭제
+docker container prune # 이전에 사용된 캐시 컨테이너 삭제
+docker network prune # 이전에 사용된 캐시 네트워크 삭제
+docker-compose up -d
+docker-compose ps
+```
+
+## Apache Spark Tutorial
+
+### 컨테이너 기동
+
+```bash
+cd ~/work/ssm-seoul-data-engineer/spark
+docker rm -f `docker ps -aq | awk '{print $1}'` # 이전에 사용된 컨테이너가 존재하는 경우 삭제
+docker container prune # 이전에 사용된 캐시 컨테이너 삭제
+docker network prune # 이전에 사용된 캐시 네트워크 삭제
+docker-compose up -d
+docker-compose ps
+```
+
+### 스파크 노트북 실행
+
+> 노트북 실행 및 코드 설명은 "[데이터 엔지니어링 프로젝트](https://github.com/psyoblade/ssm-seoul-data-engineer/tree/main/spark)" 페이지에 상세히 설명되어 있습니다
+
+```bash
+docker-compose logs notebook
+notebook | To access the server, open this file in a browser:
+notebook | file:///home/jovyan/.local/share/jupyter/runtime/jpserver-7-open.html
+notebook | Or copy and paste one of these URLs:
+notebook | http://notebook:8888/lab?token=82c56a2b2d429ed3ce5f0e8ccd93b558068be532f7890d2d
+notebook | http://127.0.0.1:8888/lab?token=82c56a2b2d429ed3ce5f0e8ccd93b558068be532f7890d2d
+
+# 마지막 라인의 127.0.0.1:8888 로 시작하는 줄을 복사해서 크롬 브라우저를 통해 접속합니다
+```
 
 ## Appendix
 
@@ -187,6 +228,5 @@ sudo systemctl restart mysql
 
 # jdbc connection string
 jdbc:mysql://localhost/db?useUnicode=true&serverTimezone=Asia/Seoul
-
 ```
 
