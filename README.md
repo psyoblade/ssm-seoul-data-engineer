@@ -10,6 +10,8 @@
 
 ## 도커 컨테이너 정상 확인
 
+> 아래의 예제에서는 내가 생성한 github 아이디가 "ssm_seoul" 이라고 가정합니다
+
 ```bash
 # 도커 및 컴포즈 버전 확인
 docker --version
@@ -21,12 +23,12 @@ mkdir -p ~/work
 cd ~/work
 
 # [최초] 포크한 URL 통하여 로컬에 레포지토리 클론
-github_id="깃헙아이디"
+github_id="ssm_seoul" # 깃헙 아이디
 git clone "https://github.com/${github_id}/ssm-seoul-data-engineer.git"
 cd ~/work/ssm-seoul-data-engineer
 
 # [갱신] 기 클론한 레포지토리의 경우 업데이트
-github_id="깃헙아이디"
+github_id="ssm_seoul"
 cd ~/work/ssm-seoul-data-engineer
 git pull
 

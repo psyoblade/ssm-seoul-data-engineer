@@ -1,4 +1,4 @@
-# 데이터 엔지니어링 프로젝트
+# SSM Seoul -  Apache Spark Tutorial
 
 > 가상의 웹 쇼핑몰의 주요 지표를 생성하기 위한, 접속정보, 매출 및 고객정보 등의 데이터를 수집하여 기본 지표를 생성합니다
 
@@ -27,11 +27,11 @@
 ### 1-1. 공개된 실습 코드를 나의 레포지토리로 Fork 합니다
 > github.com 에 로그인 상태에서 [ssm-seoul-data-engineer](https://github.com/psyoblade/ssm-seoul-data-engineer) 페이지에 접속하여 우측 상단의 `Fork` 메뉴를 클릭하여 나의 레포지토리에 가져옵니다
 
-### 1-2. Fork 된 레포지토리를 로컬 터미널에서 Clone 합니다
+### 1-2. Fork 된 레포지토리에서 최신 버전을 가져옵니다
 ```bash
 # terminal
-git clone https://github.com/<github id>/ssm-seoul-data-engineer.git 
-cd ssm-seoul-data-engineer
+cd ~/work/ssm-seoul-data-engineer
+git pull
 ```
 
 ### 1-3. 현재 기동되어 있는 도커 컨테이너를 확인하고, 종료합니다

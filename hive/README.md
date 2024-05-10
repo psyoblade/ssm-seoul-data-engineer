@@ -1,4 +1,4 @@
-# 4일차. 아파치 하이브 데이터 적재
+# SSM Seoul - Apache Hive Tutorial
 
 > 아파치 하이브를 통해 다양한 데이터 웨어하우스 예제를 실습합니다
 
@@ -29,7 +29,7 @@
 ### 1-1. 최신 소스를 내려 받습니다
 ```bash
 # terminal
-cd /home/ubuntu/work/data-engineer-intermediate-training/day4
+cd ~/work/ssm-seoul-data-engineer/hive
 docker-compose down
 git pull
 ```
@@ -57,7 +57,7 @@ docker rm -f `docker ps -aq`
 #### 1-2-3. 하이브 실습을 위한 컨테이너를 기동합니다
 ```bash
 # terminal
-cd /home/ubuntu/work/data-engineer-intermediate-training/day4
+cd ~/work/ssm-seoul-data-engineer/hive
 docker-compose pull
 docker-compose up -d
 docker-compose ps
@@ -1168,7 +1168,7 @@ select title, cast(revenue as float) as rev from imdb_movies where year = '2015'
   - partitioned by (year string) : 경로별로 나뉘어 저장한다는 것을 선언
   - dynamic.partition=true : 데이터 값에 따라 동적으로 저장함을 지정
   - dynamic.partition.mode=nonsstrict : strict 로 지정하는 경우 실수로 overwrite 를 막기 위해 저장시에 반드시 1개 이상의 파티션을 명시해야만 수행되는 엄격한 옵션
-<br>
+  <br>
 
 ```sql
 # beeline> 
@@ -1412,7 +1412,7 @@ select * from employee;
 
 desc department;
 select * from department;
-```  
+```
 
 <details><summary> :blue_book: 15. [중급] employee + department 정보를 가진 테이블을 조회하는 SQL문을 수행하세요 </summary>
 
