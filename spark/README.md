@@ -1,4 +1,4 @@
-# SSM Seoul -  Apache Spark Tutorial
+# SSM Seoul - Apache Spark Tutorial
 
 > 가상의 웹 쇼핑몰의 주요 지표를 생성하기 위한, 접속정보, 매출 및 고객정보 등의 데이터를 수집하여 기본 지표를 생성합니다
 

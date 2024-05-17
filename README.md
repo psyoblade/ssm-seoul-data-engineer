@@ -43,7 +43,7 @@ docker-compose down
 
 ## Apache Sqoop Tutorial
 
-### 컨테이너 기동
+### 컨테이너 초기화 및 기동
 
 ```bash
 cd ~/work/ssm-seoul-data-engineer/sqoop
@@ -96,7 +96,7 @@ cat ~/target/student/part-m-00000
 
 ## TrasureData Fluentd Tutorial
 
-### 실습을 위한 컨테이너 기동
+### 컨테이너 초기화 및 기동
 
 ```bash
 cd ~/work/ssm-seoul-data-engineer/fluentd
@@ -162,7 +162,7 @@ docker-compose ps
 
 ## Apache Spark Tutorial
 
-### 컨테이너 기동
+### 컨테이너 초기화 및 기동
 
 ```bash
 cd ~/work/ssm-seoul-data-engineer/spark
@@ -187,6 +187,23 @@ notebook | http://127.0.0.1:8888/lab?token=82c56a2b2d429ed3ce5f0e8ccd93b558068be
 
 # 마지막 라인의 127.0.0.1:8888 로 시작하는 줄을 복사해서 크롬 브라우저를 통해 접속합니다
 ```
+
+## Docker Container Tutorial
+
+### 컨테이너 초기화 및 기동
+
+```bash
+cd ~/work/ssm-seoul-data-engineer/docker
+docker rm -f `docker ps -aq | awk '{print $1}'` # 이전에 사용된 컨테이너가 존재하는 경우 삭제
+docker container prune # 이전에 사용된 캐시 컨테이너 삭제
+docker network prune # 이전에 사용된 캐시 네트워크 삭제
+docker-compose up -d
+docker-compose ps
+```
+
+### 도커 컨테이너 생성 실습
+
+>  도커 생성 및 실습 코드 설명은 "[데이터 엔지니어링 프로젝트 - 도커](https://github.com/psyoblade/ssm-seoul-data-engineer/tree/main/docker)" 페이지에 상세히 설명되어 있습니다
 
 ## Appendix
 

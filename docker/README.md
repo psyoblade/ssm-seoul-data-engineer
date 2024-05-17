@@ -1,4 +1,4 @@
-# SSM Seoul - Building Docker Container
+# SSM Seoul - Docker Container Tutorial
 
 > 도커 및 컴포즈를 통한 기본 명령어를 학습합니다
 
@@ -10,7 +10,7 @@
   * [2. Docker 명령어 실습](#2-Docker-명령어-실습)
   * [3. Docker Compose 명령어 실습](#3-Docker-Compose-명령어-실습)
   * [4. 참고 자료](#4-참고-자료)
-<br>
+  <br>
 
 
 ## 1. WSL2 혹은 터미널 환경에 접속
