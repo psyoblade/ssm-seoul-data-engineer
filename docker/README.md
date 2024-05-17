@@ -1,4 +1,4 @@
-# 도커 컨테이너 생성 실습
+# SSM Seoul - Building Docker Container
 
 > 도커 및 컴포즈를 통한 기본 명령어를 학습합니다
 
