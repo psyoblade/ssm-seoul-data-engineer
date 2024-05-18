@@ -266,7 +266,7 @@ cat > Dockerfile
 * 아래의 내용을 복사해서 붙여넣은 다음 <kbd><samp>Ctrl</samp>+<samp>C</samp></kbd> 명령으로 나오면 파일이 생성됩니다
 ```bash
 FROM ubuntu:18.04
-LABEL maintainer="student@lg.com"
+LABEL maintainer="student@ssm.seoul.com"
 
 RUN apt-get update && apt-get install -y rsync tree
 
@@ -639,7 +639,7 @@ services:
       MYSQL_USER: user
       MYSQL_PASSWORD: pass
     volumes:
-      - ./custom:/etc/mysql/conf.d
+      - ./mysql/etc:/etc/mysql/conf.d
   php:
     image: phpmyadmin/phpmyadmin
     container_name: phpmyadmin
@@ -697,7 +697,7 @@ services:
       timeout: 1s
       retries: 3
     volumes:
-      - ./custom:/etc/mysql/conf.d
+      - ./mysql/etc:/etc/mysql/conf.d
   php:
     image: phpmyadmin/phpmyadmin
     container_name: phpmyadmin
